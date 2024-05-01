@@ -7,41 +7,40 @@ use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
 trait OsmfeaturesSyncableTrait
 {
     /**
-     * Get the data from osmfeatures list api url for the model with the given parameters.
-     *
+     * Get the data from osmfeatures list api url for the model with the given page parameter.
+     * @param int $page
      * @throws WmOsmfeaturesException
      */
-    public function getApiList(?string $updated_at = null, int $page = 1, ?string $bbox = null, ?int $score = null, ?int $admin_level = null): string
+    public function getApiList(int $page = 1): string
     {
-        $apiUrl = $this->osmfeatures_endpoint;
+        //check if the model instance has implemented the getOsmfeaturesListQueryParameters method
+        if (!method_exists($this, 'getOsmfeaturesListQueryParameters')) {
+            throw WmOsmfeaturesException::missingQueryParameters();
+        }
 
-        if (! $apiUrl) {
+        //check if the model instance has implemented the getOsmfeaturesEndpoint method
+        if (!method_exists($this, 'getOsmfeaturesEndpoint')) {
             throw WmOsmfeaturesException::missingEndpoint();
         }
 
-        //build the query
-        $query = [
-            'page' => $page,
-        ];
+        $endpoint = $this->getOsmfeaturesEndpoint();
+        $queryParameters = $this->getOsmfeaturesListQueryParameters($page);
+        $queryParameters['page'] = $page;
 
-        if ($updated_at) {
-            $query['updated_at'] = $updated_at;
+        return $endpoint . '?' . http_build_query($queryParameters);
+    }
+
+    /**
+     * Get the osmfeatures detail api url for the model passing the osmfeatures id.
+     * 
+     * @param string $osmfeatures_id
+     * @return string
+     */
+    public function getApiSingleFeature(string $osmfeatures_id): string
+    {
+        if (!$this->osmfeatures_endpoint) {
+            throw WmOsmfeaturesException::missingEndpoint();
         }
-
-        if ($bbox) {
-            $query['bbox'] = $bbox;
-        }
-
-        if ($score) {
-            $query['score'] = $score;
-        }
-
-        if ($admin_level) {
-            $query['admin_level'] = $admin_level;
-        }
-
-        $apiUrl .= '?'.http_build_query($query);
-
-        return $apiUrl;
+        return $this->osmfeatures_endpoint . '/' . $osmfeatures_id;
     }
 }
