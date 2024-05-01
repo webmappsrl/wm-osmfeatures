@@ -1,6 +1,5 @@
 <?php
 
-use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
 use Wm\WmOsmfeatures\Interfaces\OsmfeaturesSyncableInterface;
 use Wm\WmOsmfeatures\Traits\OsmfeaturesSyncableTrait;
 
@@ -15,6 +14,7 @@ describe('getApiList', function () {
             {
                 return 'https://osmfeatures.maphub.it/api/v1/features/model';
             }
+
             public function getOsmfeaturesListQueryParameters(): array
             {
                 return ['updated_at' => '2020-01-01', 'bbox' => '1,2', 'score' => '3', 'admin_level' => '4'];

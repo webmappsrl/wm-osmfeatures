@@ -2,16 +2,12 @@
 
 namespace Wm\WmOsmfeatures\Interfaces;
 
-
 interface OsmfeaturesSyncableInterface
 {
     /**
      * Returns the OSMFeatures API endpoint for listing features for the model.
-     *
-     * @return string
      */
     public function getOsmfeaturesEndpoint(): string;
-
 
     /**
      * Returns the query parameters for listing features for the model.
