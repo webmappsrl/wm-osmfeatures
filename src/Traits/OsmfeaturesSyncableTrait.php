@@ -6,28 +6,22 @@ use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
 
 trait OsmfeaturesSyncableTrait
 {
-
     /**
      * Get the data from osmfeatures list api url for the model with the given parameters.
-     * @param string|null $updated_at
-     * @param int $page
-     * @param string|null $bbox
-     * @param int|null $score
-     * @param int|null $admin_level
-     * @return string
+     *
      * @throws WmOsmfeaturesException
      */
-    public function getApiList(string $updated_at = null, int $page = 1, string $bbox = null, int $score = null, int $admin_level = null): string
+    public function getApiList(?string $updated_at = null, int $page = 1, ?string $bbox = null, ?int $score = null, ?int $admin_level = null): string
     {
         $apiUrl = $this->osmfeatures_endpoint;
 
-        if (!$apiUrl) {
+        if (! $apiUrl) {
             throw WmOsmfeaturesException::missingEndpoint();
         }
 
         //build the query
         $query = [
-            'page' => $page
+            'page' => $page,
         ];
 
         if ($updated_at) {
@@ -46,7 +40,7 @@ trait OsmfeaturesSyncableTrait
             $query['admin_level'] = $admin_level;
         }
 
-        $apiUrl .= '?' . http_build_query($query);
+        $apiUrl .= '?'.http_build_query($query);
 
         return $apiUrl;
     }
