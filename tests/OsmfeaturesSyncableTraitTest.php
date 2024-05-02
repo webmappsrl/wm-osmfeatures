@@ -1,7 +1,8 @@
 <?php
 
-use Wm\WmOsmfeatures\Interfaces\OsmfeaturesSyncableInterface;
 use Wm\WmOsmfeatures\Traits\OsmfeaturesSyncableTrait;
+use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
+use Wm\WmOsmfeatures\Interfaces\OsmfeaturesSyncableInterface;
 
 beforeEach(function () {
     //create a mock model with both methods from the interface implemented
@@ -76,14 +77,14 @@ describe('getApiList', function () {
         //create a mock model
         $model = $this->modelWithoutEndpoint;
 
-        expect(fn () => $model->getApiList())->toThrow(Exceptions\WmOsmfeaturesException::class);
+        expect(fn () => $model->getApiList())->toThrow(WmOsmfeaturesException::class);
     });
 
     it('throws exception if the model has no query parameters', function () {
         //create a mock model
         $model = $this->modelWithoutQueryParameters;
 
-        expect(fn () => $model->getApiList())->toThrow(Exceptions\WmOsmfeaturesException::class);
+        expect(fn () => $model->getApiList())->toThrow(WmOsmfeaturesException::class);
     });
 });
 
@@ -99,7 +100,7 @@ describe('getApiSingleFeature', function () {
         //create a mock model
         $model = $this->modelWithoutEndpoint;
 
-        expect(fn () => $model->getApiSingleFeature(1))->toThrow(Exceptions\WmOsmfeaturesException::class);
+        expect(fn () => $model->getApiSingleFeature(1))->toThrow(WmOsmfeaturesException::class);
     });
 
     it(
@@ -118,6 +119,6 @@ describe('getApiSingleFeature', function () {
         //create a mock model
         $model = $this->modelWithoutQueryParameters;
 
-        expect(fn () => $model->getApiSingleFeature(123))->not->toThrow(Exceptions\WmOsmfeaturesException::class);
+        expect(fn () => $model->getApiSingleFeature(123))->not->toThrow(WmOsmfeaturesException::class);
     });
 });
