@@ -33,4 +33,9 @@ class WmOsmfeaturesException extends \Exception
     {
         return new self("Table {$table} is already initialized with osmfeatures columns.");
     }
+
+    public static function invalidModel(string $className): self
+    {
+        return new self("Class {$className} is not a valid model.");
+    }
 }
