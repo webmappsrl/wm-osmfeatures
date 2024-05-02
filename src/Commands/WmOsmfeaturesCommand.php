@@ -5,10 +5,10 @@ namespace Wm\WmOsmfeatures\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
 
 class WmOsmfeaturesCommand extends Command
@@ -79,7 +79,7 @@ class WmOsmfeaturesCommand extends Command
         $schema = DB::getSchemaBuilder();
 
         //check if the table exists
-        if (!$schema->hasTable($table)) {
+        if (! $schema->hasTable($table)) {
             throw WmOsmfeaturesException::missingTable($table);
         }
 
@@ -90,28 +90,27 @@ class WmOsmfeaturesCommand extends Command
             return;
         }
 
-        if (!in_array('osmfeatures_id', $schema->getColumnListing($table))) {
+        if (! in_array('osmfeatures_id', $schema->getColumnListing($table))) {
             DB::statement("ALTER TABLE $table ADD COLUMN osmfeatures_id varchar(255)");
         }
 
-        if (!in_array('osmfeatures_data', $schema->getColumnListing($table))) {
+        if (! in_array('osmfeatures_data', $schema->getColumnListing($table))) {
             DB::statement("ALTER TABLE $table ADD COLUMN osmfeatures_data jsonb");
         }
 
-        if (!in_array('osmfeatures_updated_at', $schema->getColumnListing($table))) {
+        if (! in_array('osmfeatures_updated_at', $schema->getColumnListing($table))) {
             DB::statement("ALTER TABLE $table ADD COLUMN osmfeatures_updated_at timestamp");
         }
     }
 
     /**
      * Get the class name of the given model
-     * @param string $modelName
-     * 
+     *
      * @return string
      */
     protected function getClassName(string $modelName)
     {
-        return 'App\\Models\\' . $modelName;
+        return 'App\\Models\\'.$modelName;
     }
 
     /**
@@ -130,8 +129,8 @@ class WmOsmfeaturesCommand extends Command
 
     /**
      * Fetch the osmfeatures ids for the given model
-     * @param string $instance
-     * 
+     *
+     * @param  string  $instance
      * @return array
      */
     protected function fetchOsmfeaturesIds(string $className): Collection
@@ -143,7 +142,7 @@ class WmOsmfeaturesCommand extends Command
             $url = $className::getApiList($page);
             $response = Http::get($url);
 
-            if ($response->successful() && !empty($response->json()['data'])) {
+            if ($response->successful() && ! empty($response->json()['data'])) {
                 $json = $response->json();
 
                 foreach ($json['data'] as $dataItem) {
@@ -154,7 +153,7 @@ class WmOsmfeaturesCommand extends Command
             } else {
                 break;
             }
-        } while (!empty($response->json()['data']));
+        } while (! empty($response->json()['data']));
 
         return $osmfeaturesIds;
     }

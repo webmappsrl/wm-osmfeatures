@@ -19,7 +19,6 @@ interface OsmfeaturesSyncableInterface
      */
     public static function getOsmfeaturesListQueryParameters(): array;
 
-
     /**
      * Update the local database after a successful OSMFeatures sync.
      */
