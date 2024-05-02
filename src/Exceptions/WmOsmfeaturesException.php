@@ -4,7 +4,6 @@ namespace Wm\WmOsmfeatures\Exceptions;
 
 class WmOsmfeaturesException extends \Exception
 {
-
     public static function missingEndpoint(): self
     {
         return new self('The endpoint is missing in the model. Please make sure you have implemented the OsmfeaturesSyncableInterface in the model.');

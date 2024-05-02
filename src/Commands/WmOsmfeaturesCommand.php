@@ -2,11 +2,11 @@
 
 namespace Wm\WmOsmfeatures\Commands;
 
-use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
 
 class WmOsmfeaturesCommand extends Command
@@ -29,13 +29,9 @@ class WmOsmfeaturesCommand extends Command
         }
     }
 
-
     /**
      * Return an array of the model's names that implement the OsmfeaturesSyncableTrait
-     * 
-     * @return array
      */
-
     protected function getInitializedModels(): array
     {
         //get all the models that implement the OsmfeaturesSyncableTrait
@@ -70,9 +66,6 @@ class WmOsmfeaturesCommand extends Command
 
     /**
      * Initialize the given database table for osmfeatures sync. Adding osmfeatures_id, osmfeatures_data, osmfeatures_updated_at columns
-     * @param string $table
-     * 
-     * @return void
      */
     protected function initializeTable(string $table): void
     {
@@ -80,39 +73,39 @@ class WmOsmfeaturesCommand extends Command
         $schema = DB::getSchemaBuilder();
 
         //check if the table exists
-        if (!$schema->hasTable($table)) {
+        if (! $schema->hasTable($table)) {
             throw WmOsmfeaturesException::missingTable($table);
         }
 
         if ($schema->hasColumns($table, ['osmfeatures_id', 'osmfeatures_data', 'osmfeatures_updated_at'])) {
             Log::info("Table $table already initialized");
             $this->info("Table $table already initialized, skipping");
+
             return;
         }
 
-        if (!in_array('osmfeatures_id', $schema->getColumnListing($table))) {
+        if (! in_array('osmfeatures_id', $schema->getColumnListing($table))) {
             DB::statement("ALTER TABLE $table ADD COLUMN osmfeatures_id varchar(255)");
         }
 
-        if (!in_array('osmfeatures_data', $schema->getColumnListing($table))) {
+        if (! in_array('osmfeatures_data', $schema->getColumnListing($table))) {
             DB::statement("ALTER TABLE $table ADD COLUMN osmfeatures_data jsonb");
         }
 
-        if (!in_array('osmfeatures_updated_at', $schema->getColumnListing($table))) {
+        if (! in_array('osmfeatures_updated_at', $schema->getColumnListing($table))) {
             DB::statement("ALTER TABLE $table ADD COLUMN osmfeatures_updated_at timestamp");
         }
     }
 
     /**
      * Get the table name of the given model
-     * @param string $model
-     * 
-     * @return string
+     *
+     * @param  string  $model
      */
     protected function getTableName(string $modelName): string
     {
         //get an instance of the model class
-        $class = 'App\\Models\\' . $modelName;
+        $class = 'App\\Models\\'.$modelName;
 
         $instance = new $class;
 

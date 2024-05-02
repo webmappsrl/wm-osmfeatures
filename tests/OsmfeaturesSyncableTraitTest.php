@@ -1,8 +1,8 @@
 <?php
 
-use Wm\WmOsmfeatures\Traits\OsmfeaturesSyncableTrait;
 use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
 use Wm\WmOsmfeatures\Interfaces\OsmfeaturesSyncableInterface;
+use Wm\WmOsmfeatures\Traits\OsmfeaturesSyncableTrait;
 
 beforeEach(function () {
     //create a mock model with both methods from the interface implemented
