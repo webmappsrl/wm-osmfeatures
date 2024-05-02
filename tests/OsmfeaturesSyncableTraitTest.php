@@ -13,6 +13,7 @@ beforeEach(function () {
         {
             return 'https://osmfeatures.maphub.it/api/v1/features/model';
         }
+
         public function getOsmfeaturesListQueryParameters(): array
         {
             return ['updated_at' => '2020-01-01', 'bbox' => '1,2', 'score' => '3', 'admin_level' => '4'];
