@@ -7,7 +7,7 @@ interface OsmfeaturesSyncableInterface
     /**
      * Returns the OSMFeatures API endpoint for listing features for the model.
      */
-    public function getOsmfeaturesEndpoint(): string;
+    public static function getOsmfeaturesEndpoint(): string;
 
     /**
      * Returns the query parameters for listing features for the model.
@@ -17,5 +17,11 @@ interface OsmfeaturesSyncableInterface
      *
      * @return array<string,string>
      */
-    public function getOsmfeaturesListQueryParameters(): array;
+    public static function getOsmfeaturesListQueryParameters(): array;
+
+
+    /**
+     * Update the local database after a successful OSMFeatures sync.
+     */
+    public static function osmfeatureUpdateLocalAfterSync(): void;
 }

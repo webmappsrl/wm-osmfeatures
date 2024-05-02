@@ -10,14 +10,19 @@ beforeEach(function () {
     {
         use OsmfeaturesSyncableTrait;
 
-        public function getOsmfeaturesEndpoint(): string
+        public static function getOsmfeaturesEndpoint(): string
         {
             return 'https://osmfeatures.maphub.it/api/v1/features/model';
         }
 
-        public function getOsmfeaturesListQueryParameters(): array
+        public static function getOsmfeaturesListQueryParameters(): array
         {
             return ['updated_at' => '2020-01-01', 'bbox' => '1,2', 'score' => '3', 'admin_level' => '4'];
+        }
+
+        public static function osmfeatureUpdateLocalAfterSync(): void
+        {
+            //do nothing for now
         }
     };
 
