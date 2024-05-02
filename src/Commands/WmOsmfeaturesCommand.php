@@ -3,10 +3,12 @@
 namespace Wm\WmOsmfeatures\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
 use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
 
 class WmOsmfeaturesCommand extends Command
@@ -23,9 +25,13 @@ class WmOsmfeaturesCommand extends Command
             throw WmOsmfeaturesException::missingInitializedModels();
         }
 
-        foreach ($models as $model) {
-            $table = $this->getTableName($model);
+        //for each model initialized with the trait, initialize the table and get all the instances
+        foreach ($models as $modelName) {
+            $className = $this->getClassName($modelName);
+            $table = $this->getTableName($className);
             $this->initializeTable($table);
+
+            $osmfeaturesIds = $this->fetchOsmfeaturesIds($className);
         }
     }
 
@@ -73,7 +79,7 @@ class WmOsmfeaturesCommand extends Command
         $schema = DB::getSchemaBuilder();
 
         //check if the table exists
-        if (! $schema->hasTable($table)) {
+        if (!$schema->hasTable($table)) {
             throw WmOsmfeaturesException::missingTable($table);
         }
 
@@ -84,17 +90,28 @@ class WmOsmfeaturesCommand extends Command
             return;
         }
 
-        if (! in_array('osmfeatures_id', $schema->getColumnListing($table))) {
+        if (!in_array('osmfeatures_id', $schema->getColumnListing($table))) {
             DB::statement("ALTER TABLE $table ADD COLUMN osmfeatures_id varchar(255)");
         }
 
-        if (! in_array('osmfeatures_data', $schema->getColumnListing($table))) {
+        if (!in_array('osmfeatures_data', $schema->getColumnListing($table))) {
             DB::statement("ALTER TABLE $table ADD COLUMN osmfeatures_data jsonb");
         }
 
-        if (! in_array('osmfeatures_updated_at', $schema->getColumnListing($table))) {
+        if (!in_array('osmfeatures_updated_at', $schema->getColumnListing($table))) {
             DB::statement("ALTER TABLE $table ADD COLUMN osmfeatures_updated_at timestamp");
         }
+    }
+
+    /**
+     * Get the class name of the given model
+     * @param string $modelName
+     * 
+     * @return string
+     */
+    protected function getClassName(string $modelName)
+    {
+        return 'App\\Models\\' . $modelName;
     }
 
     /**
@@ -102,15 +119,43 @@ class WmOsmfeaturesCommand extends Command
      *
      * @param  string  $model
      */
-    protected function getTableName(string $modelName): string
+    protected function getTableName(string $className): string
     {
-        //get an instance of the model class
-        $class = 'App\\Models\\'.$modelName;
-
-        $instance = new $class;
+        $instance = new $className;
 
         $table = $instance->getTable();
 
         return $table;
+    }
+
+    /**
+     * Fetch the osmfeatures ids for the given model
+     * @param string $instance
+     * 
+     * @return array
+     */
+    protected function fetchOsmfeaturesIds(string $className): Collection
+    {
+        $osmfeaturesIds = collect();
+        $page = 1;
+
+        do {
+            $url = $className::getApiList($page);
+            $response = Http::get($url);
+
+            if ($response->successful() && !empty($response->json()['data'])) {
+                $json = $response->json();
+
+                foreach ($json['data'] as $dataItem) {
+                    $osmfeaturesIds->push($dataItem['id']);
+                }
+
+                $page++;
+            } else {
+                break;
+            }
+        } while (!empty($response->json()['data']));
+
+        return $osmfeaturesIds;
     }
 }
