@@ -57,6 +57,7 @@ class WmOsmfeaturesException extends \Exception
     public static function missingFillables(string $className, array $attributes): self
     {
         $attributes = implode(', ', $attributes);
+
         return new self("The model {$className} is missing the following fillables: {$attributes}");
     }
 
