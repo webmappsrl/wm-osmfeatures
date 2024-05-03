@@ -2,13 +2,14 @@
 
 namespace Wm\WmOsmfeatures\Commands;
 
+use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
+use Wm\WmOsmfeatures\Jobs\OsmfeaturesSyncJob;
 use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
 
 class WmOsmfeaturesCommand extends Command
@@ -19,6 +20,7 @@ class WmOsmfeaturesCommand extends Command
 
     public function handle()
     {
+        $this->info('Checking initialized models...');
         $models = $this->getInitializedModels();
 
         if (empty($models)) {
@@ -27,11 +29,30 @@ class WmOsmfeaturesCommand extends Command
 
         //for each model initialized with the trait, initialize the table and get all the instances
         foreach ($models as $modelName) {
+            $this->info('Initializing table for ' . $modelName);
+
             $className = $this->getClassName($modelName);
             $table = $this->getTableName($className);
+
             $this->initializeTable($table);
+            $this->checkFillables($className);
+
+            $this->info('Fetching ids for ' . $modelName);
 
             $osmfeaturesIds = $this->fetchOsmfeaturesIds($className);
+            if ($osmfeaturesIds->isEmpty()) {
+                throw WmOsmfeaturesException::noOsmfeaturesIdsFound($modelName);
+            }
+
+            $this->info('Fetched ' . count($osmfeaturesIds) . ' ids');
+            $this->info('Dispatching jobs for ' . $modelName);
+
+            //dispatch a job for each osmfeatures id
+            $osmfeaturesIds->each(function ($osmfeaturesId) use ($className) {
+                dispatch(new OsmfeaturesSyncJob($osmfeaturesId, $className));
+            });
+            $this->info("Jobs pushed for $modelName");
+            Log::info("Jobs pushed for $modelName");
         }
     }
 
@@ -79,7 +100,7 @@ class WmOsmfeaturesCommand extends Command
         $schema = DB::getSchemaBuilder();
 
         //check if the table exists
-        if (! $schema->hasTable($table)) {
+        if (!$schema->hasTable($table)) {
             throw WmOsmfeaturesException::missingTable($table);
         }
 
@@ -90,18 +111,46 @@ class WmOsmfeaturesCommand extends Command
             return;
         }
 
-        if (! in_array('osmfeatures_id', $schema->getColumnListing($table))) {
+        if (!in_array('osmfeatures_id', $schema->getColumnListing($table))) {
             DB::statement("ALTER TABLE $table ADD COLUMN osmfeatures_id varchar(255)");
         }
 
-        if (! in_array('osmfeatures_data', $schema->getColumnListing($table))) {
+        if (!in_array('osmfeatures_data', $schema->getColumnListing($table))) {
             DB::statement("ALTER TABLE $table ADD COLUMN osmfeatures_data jsonb");
         }
 
-        if (! in_array('osmfeatures_updated_at', $schema->getColumnListing($table))) {
+        if (!in_array('osmfeatures_updated_at', $schema->getColumnListing($table))) {
             DB::statement("ALTER TABLE $table ADD COLUMN osmfeatures_updated_at timestamp");
         }
+        $this->info("Table $table initialized for the osmfeatures sync");
     }
+
+    /**
+     * Check if the given model has all the required fillables
+     * 
+     * @param string $className
+     * 
+     * @throws WmOsmfeaturesException
+     * 
+     * @return bool
+     */
+    protected function checkFillables(string $className): bool
+    {
+        $instance = new $className;
+
+        $fillable = $instance->getFillable();
+
+        $osmFeaturesAttributes = ['osmfeatures_id', 'osmfeatures_data', 'osmfeatures_updated_at'];
+
+        $missingAttributes = array_diff($osmFeaturesAttributes, $fillable);
+
+        if (!empty($missingAttributes)) {
+            throw WmOsmfeaturesException::missingFillables($className, $missingAttributes);
+        }
+
+        return true;
+    }
+
 
     /**
      * Get the class name of the given model
@@ -110,7 +159,7 @@ class WmOsmfeaturesCommand extends Command
      */
     protected function getClassName(string $modelName)
     {
-        return 'App\\Models\\'.$modelName;
+        return 'App\\Models\\' . $modelName;
     }
 
     /**
@@ -129,9 +178,9 @@ class WmOsmfeaturesCommand extends Command
 
     /**
      * Fetch the osmfeatures ids for the given model
-     *
-     * @param  string  $instance
-     * @return array
+     * @param string $instance
+     * 
+     * @return Collection
      */
     protected function fetchOsmfeaturesIds(string $className): Collection
     {
@@ -142,7 +191,11 @@ class WmOsmfeaturesCommand extends Command
             $url = $className::getApiList($page);
             $response = Http::get($url);
 
-            if ($response->successful() && ! empty($response->json()['data'])) {
+            if ($response->failed()) {
+                throw WmOsmfeaturesException::invalidUrl($url);
+            }
+
+            if ($response->successful() && !empty($response->json()['data'])) {
                 $json = $response->json();
 
                 foreach ($json['data'] as $dataItem) {
@@ -153,8 +206,8 @@ class WmOsmfeaturesCommand extends Command
             } else {
                 break;
             }
-        } while (! empty($response->json()['data']));
+        } while (!empty($response->json()['data']));
 
-        return $osmfeaturesIds;
+        return $osmfeaturesIds->values();
     }
 }
