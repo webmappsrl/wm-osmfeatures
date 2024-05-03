@@ -98,14 +98,14 @@ describe('getApiSingleFeature', function () {
         //create a mock model
         $model = $this->modelWithInterface;
 
-        expect($model->getApiSingleFeature(1))->toBeString();
+        expect($model->getApiSingleFeature('R1234'))->toBeString();
     });
 
     it('throws exception if the model has no endpoint', function () {
         //create a mock model
         $model = $this->modelWithoutEndpoint;
 
-        expect(fn () => $model->getApiSingleFeature(1))->toThrow(WmOsmfeaturesException::class);
+        expect(fn () => $model->getApiSingleFeature('N1234'))->toThrow(WmOsmfeaturesException::class);
     });
 
     it(
@@ -114,9 +114,9 @@ describe('getApiSingleFeature', function () {
             //create a mock model
             $model = $this->modelWithInterface;
 
-            $url = $model->getApiSingleFeature(123);
+            $url = $model->getApiSingleFeature('W1234');
 
-            expect($url)->toBe('https://osmfeatures.maphub.it/api/v1/features/model/123');
+            expect($url)->toBe('https://osmfeatures.maphub.it/api/v1/features/model/W1234');
         }
     );
 
@@ -124,6 +124,13 @@ describe('getApiSingleFeature', function () {
         //create a mock model
         $model = $this->modelWithoutQueryParameters;
 
-        expect(fn () => $model->getApiSingleFeature(123))->not->toThrow(WmOsmfeaturesException::class);
+        expect(fn () => $model->getApiSingleFeature('N1234'))->not->toThrow(WmOsmfeaturesException::class);
+    });
+
+    it('throws exception if the osmfeatures_id is not in the correct format', function () {
+        //create a mock model
+        $model = $this->modelWithInterface;
+
+        expect(fn () => $model->getApiSingleFeature('1234'))->toThrow(WmOsmfeaturesException::class);
     });
 });
