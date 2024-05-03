@@ -16,7 +16,7 @@ class WmOsmfeaturesCommand extends Command
 {
     public $signature = 'wm-osmfeatures:sync';
 
-    public $description = 'Begin the OSMFeaturessync process for the initialized models.';
+    public $description = 'Begin the OSMFeaturessync process for the initialized models and push sync jobs to the queue.';
 
     public function handle()
     {
