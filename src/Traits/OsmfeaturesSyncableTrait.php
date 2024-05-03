@@ -24,7 +24,9 @@ trait OsmfeaturesSyncableTrait
         }
 
         $endpoint = static::getOsmfeaturesEndpoint();
-        if (substr($endpoint, -1) !== '/') {
+
+        //if endpoint does not finish with '/', add it
+        if (substr($endpoint, -1) != '/') {
             $endpoint .= '/';
         }
 
@@ -50,10 +52,9 @@ trait OsmfeaturesSyncableTrait
         }
 
         $endpoint = static::getOsmfeaturesEndpoint();
-        if (substr(
-            $endpoint,
-            -1
-        ) !== '/') {
+
+        //if endpoint does not finish with '/', add it
+        if (substr($endpoint, -1) != '/') {
             $endpoint .= '/';
         }
 
