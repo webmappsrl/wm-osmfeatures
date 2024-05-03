@@ -38,4 +38,30 @@ class WmOsmfeaturesException extends \Exception
     {
         return new self("Class {$className} is not a valid model.");
     }
+
+    public static function invalidOsmfeaturesId(string $id): self
+    {
+        return new self("{$id} is not a valid osmfeatures id.");
+    }
+
+    public static function noOsmfeaturesIdsFound(string $modelName): self
+    {
+        return new self("No osmfeatures ids found for the model {$modelName}.");
+    }
+
+    public static function invalidUrl(string $url): self
+    {
+        return new self("{$url} is not returning a successful response. Please check the url and try again.");
+    }
+
+    public static function missingFillables(string $className, array $attributes): self
+    {
+        $attributes = implode(', ', $attributes);
+        return new self("The model {$className} is missing the following fillables: {$attributes}");
+    }
+
+    public static function modelNotFoud(string $osmfeaturesId)
+    {
+        return new self("Model with osmfeatures id {$osmfeaturesId} not found in database.");
+    }
 }
