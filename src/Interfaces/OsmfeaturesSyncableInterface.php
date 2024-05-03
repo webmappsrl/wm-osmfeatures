@@ -22,5 +22,5 @@ interface OsmfeaturesSyncableInterface
     /**
      * Update the local database after a successful OSMFeatures sync.
      */
-    public static function osmfeatureUpdateLocalAfterSync(): void;
+    public static function osmfeaturesUpdateLocalAfterSync(string $osmfeaturesId): void;
 }
