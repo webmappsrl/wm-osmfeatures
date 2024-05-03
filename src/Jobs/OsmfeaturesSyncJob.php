@@ -36,7 +36,7 @@ class OsmfeaturesSyncJob implements ShouldQueue
         $response = Http::get($singleFeatureApi);
 
         if ($response->failed() || $response->json() === null) {
-            throw WmOsmfeaturesException::invalidApiUrl($singleFeatureApi);
+            throw WmOsmfeaturesException::invalidUrl($singleFeatureApi);
         }
 
         $data = $response->json();
