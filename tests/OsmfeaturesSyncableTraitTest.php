@@ -20,7 +20,7 @@ beforeEach(function () {
             return ['updated_at' => '2020-01-01', 'bbox' => '1,2', 'score' => '3', 'admin_level' => '4'];
         }
 
-        public static function osmfeatureUpdateLocalAfterSync(): void
+        public static function osmfeaturesUpdateLocalAfterSync(string $osmfeaturesId): void
         {
             //do nothing for now
         }
