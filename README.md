@@ -1,60 +1,125 @@
-# This is my package wm-osmfeatures
+# Package documentation: wm-osmfeatures
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/webmapp/wm-osmfeatures.svg?style=flat-square)](https://packagist.org/packages/webmapp/wm-osmfeatures)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/webmapp/wm-osmfeatures/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/webmapp/wm-osmfeatures/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/webmapp/wm-osmfeatures/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/webmapp/wm-osmfeatures/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/webmapp/wm-osmfeatures.svg?style=flat-square)](https://packagist.org/packages/webmapp/wm-osmfeatures)
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+## Package Documentation: WmOsmfeatures
 
-## Support us
+### Introduction
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/wm-osmfeatures.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/wm-osmfeatures)
+The WmOsmfeatures package facilitates synchronization with OpenStreetMap (OSM) features, allowing for seamless integration of OSM data into your Laravel application. This documentation provides an overview of the package's functionality, usage, and integration.
 
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
+### Features
 
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+-   Fetch OSM features data via API
+-   Synchronize OSM features with local database
+-   Automatic handling of data updates
 
-## Installation
+### Installation
 
-You can install the package via composer:
+To install the WmOsmfeatures package, follow these steps:
 
-```bash
-composer require webmapp/wm-osmfeatures
-```
+1. Install the package via Composer:
 
-You can publish and run the migrations with:
+    ```
+    composer require wm/wmosmfeatures
+    ```
 
-```bash
-php artisan vendor:publish --tag="wm-osmfeatures-migrations"
-php artisan migrate
-```
+2. Configure your models to use the provided traits and interfaces.
 
-You can publish the config file with:
+### Usage
 
-```bash
-php artisan vendor:publish --tag="wm-osmfeatures-config"
-```
+#### Setting Up Models
 
-This is the contents of the published config file:
+To enable synchronization with OSM features, follow these steps:
 
-```php
-return [
-];
-```
+1. Implement the `OsmfeaturesSyncableInterface` interface in your model.
+2. Use the `OsmfeaturesSyncableTrait` trait in your model.
 
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="wm-osmfeatures-views"
-```
-
-## Usage
+Example:
 
 ```php
-$wmOsmfeatures = new Wm\WmOsmfeatures();
-echo $wmOsmfeatures->echoPhrase('Hello, Wm!');
+use Wm\WmOsmfeatures\Interfaces\OsmfeaturesSyncableInterface;
+use Wm\WmOsmfeatures\Traits\OsmfeaturesSyncableTrait;
+
+class Municipality extends Model implements OsmfeaturesSyncableInterface
+{
+    use OsmfeaturesSyncableTrait;
+
+    // Your model implementation
+}
 ```
+
+#### Configuration
+
+In your model, implement the following methods from the `OsmfeaturesSyncableInterface` interface:
+
+-   `getOsmfeaturesEndpoint`: Returns the OSMFeatures API endpoint for listing features.
+-   `getOsmfeaturesListQueryParameters`: Returns the query parameters for listing features.
+-   `osmfeaturesUpdateLocalAfterSync`: Updates the local database after a successful OSMFeatures sync.
+
+Example:
+
+```php
+class Municipality extends Model implements OsmfeaturesSyncableInterface
+{
+    // ...
+
+    public static function getOsmfeaturesEndpoint(): string
+    {
+        return 'https://osmfeatures.maphub.it/api/v1/features/admin-areas/';
+    }
+
+    public static function getOsmfeaturesListQueryParameters(): array
+    {
+        return ['admin_level' => 8];
+    }
+
+    public static function osmfeaturesUpdateLocalAfterSync(string $osmfeaturesId): void
+    {
+        // Your implementation
+    }
+
+    // ...
+}
+```
+
+Also make sure to add osmfeatures columns to fillable attributes in your model.
+
+```
+protected $fillable = ['osmfeatures_id', 'osmfeatures_data', 'osmfeatures_updated_at'];
+```
+
+#### Synchronization
+
+To synchronize OSM features with your local database, use the provided Artisan command:
+
+```
+php artisan wm-osmfeatures:sync
+```
+
+This command will prepare the initialized models table to synchronize OSM features with your local database. It then
+starts the sync process for all initialized models and pushes sync jobs to the queue.
+
+#### How the OsmfeaturesSyncJob works
+
+The `OsmfeaturesSyncJob` class is responsible for synchronizing OSM features with your local database. It makes a call to osmfeatures API and uses the `osmfeaturesUpdateLocalAfterSync(string $osmfeaturesId)` method defined in your model interface to update the local database with the new data. The `OsmfeaturesSyncJob` class runs in the background and synchronizes OSM features with your local database using the `OsmfeaturesSyncableInterface` methods.
+
+### Conclusion
+
+The WmOsmfeatures package simplifies the integration of OSM features into your Laravel application, providing seamless synchronization and data management capabilities. By following the provided guidelines, you can efficiently incorporate OSM data into your project and leverage its benefits.
+
+For more information and detailed usage instructions, refer to the package documentation and source code.
+
+### Support and Feedback
+
+For support and feedback regarding the WmOsmfeatures package, please contact the package maintainers or open an issue on the GitHub repository. We appreciate any feedback and contributions to improve the package and its functionality.
+
+Thank you for choosing WmOsmfeatures for your OSM integration needs!
+
+---
+
+Feel free to adjust the documentation as needed and let me know if you require further assistance!
 
 ## Testing
 
