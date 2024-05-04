@@ -117,13 +117,6 @@ For support and feedback regarding the WmOsmfeatures package, please contact the
 
 ---
 
-
-## Testing
-
-```bash
-composer test
-```
-
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
