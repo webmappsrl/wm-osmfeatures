@@ -115,11 +115,8 @@ For more information and detailed usage instructions, refer to the package docum
 
 For support and feedback regarding the WmOsmfeatures package, please contact the package maintainers or open an issue on the GitHub repository. We appreciate any feedback and contributions to improve the package and its functionality.
 
-Thank you for choosing WmOsmfeatures for your OSM integration needs!
-
 ---
 
-Feel free to adjust the documentation as needed and let me know if you require further assistance!
 
 ## Testing
 
