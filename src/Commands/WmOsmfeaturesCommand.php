@@ -12,7 +12,6 @@ class WmOsmfeaturesCommand extends Command
 {
     use OsmfeaturesCommandHelper;
 
-
     public $signature = 'wm-osmfeatures:sync';
 
     public $description = 'Begin the OSMFeaturessync process for the initialized models and push sync jobs to the queue.';
@@ -28,7 +27,7 @@ class WmOsmfeaturesCommand extends Command
 
         //for each model initialized with the trait, initialize the table and get all the instances
         foreach ($models as $modelName) {
-            $this->info('Initializing table for ' . $modelName);
+            $this->info('Initializing table for '.$modelName);
 
             $className = $this->getClassName($modelName);
             $table = $this->getTableName($className);
@@ -36,15 +35,15 @@ class WmOsmfeaturesCommand extends Command
             $this->initializeTable($table);
             $this->checkFillables($className);
 
-            $this->info('Fetching ids for ' . $modelName);
+            $this->info('Fetching ids for '.$modelName);
 
             $osmfeaturesIds = $this->fetchOsmfeaturesIds($className);
             if ($osmfeaturesIds->isEmpty()) {
                 throw WmOsmfeaturesException::noOsmfeaturesIdsFound($modelName);
             }
 
-            $this->info('Fetched ' . count($osmfeaturesIds) . ' ids');
-            $this->info('Dispatching jobs for ' . $modelName);
+            $this->info('Fetched '.count($osmfeaturesIds).' ids');
+            $this->info('Dispatching jobs for '.$modelName);
 
             //dispatch a job for each osmfeatures id
             $osmfeaturesIds->each(function ($osmfeaturesId) use ($className) {

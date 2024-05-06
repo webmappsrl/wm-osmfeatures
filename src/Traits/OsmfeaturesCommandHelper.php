@@ -2,22 +2,18 @@
 
 namespace Wm\WmOsmfeatures\Traits;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
-
 
 trait OsmfeaturesCommandHelper
 {
     /**
      * Return an array of the model's names that implement the OsmfeaturesSyncableTrait
-     * @param string $trait
-     * 
-     * @return array
      */
     protected function getInitializedModels(string $trait): array
     {
@@ -57,7 +53,7 @@ trait OsmfeaturesCommandHelper
         $schema = DB::getSchemaBuilder();
 
         //check if the table exists
-        if (!$schema->hasTable($table)) {
+        if (! $schema->hasTable($table)) {
             throw WmOsmfeaturesException::missingTable($table);
         }
 
@@ -68,15 +64,15 @@ trait OsmfeaturesCommandHelper
             return;
         }
 
-        if (!in_array('osmfeatures_id', $schema->getColumnListing($table))) {
+        if (! in_array('osmfeatures_id', $schema->getColumnListing($table))) {
             DB::statement("ALTER TABLE $table ADD COLUMN osmfeatures_id varchar(255)");
         }
 
-        if (!in_array('osmfeatures_data', $schema->getColumnListing($table))) {
+        if (! in_array('osmfeatures_data', $schema->getColumnListing($table))) {
             DB::statement("ALTER TABLE $table ADD COLUMN osmfeatures_data jsonb");
         }
 
-        if (!in_array('osmfeatures_updated_at', $schema->getColumnListing($table))) {
+        if (! in_array('osmfeatures_updated_at', $schema->getColumnListing($table))) {
             DB::statement("ALTER TABLE $table ADD COLUMN osmfeatures_updated_at timestamp");
         }
         $this->info("Table $table initialized for the osmfeatures sync");
@@ -98,7 +94,7 @@ trait OsmfeaturesCommandHelper
 
         $missingAttributes = array_diff($osmFeaturesAttributes, $fillable);
 
-        if (!empty($missingAttributes)) {
+        if (! empty($missingAttributes)) {
             throw WmOsmfeaturesException::missingFillables($className, $missingAttributes);
         }
 
@@ -115,10 +111,12 @@ trait OsmfeaturesCommandHelper
         if (strpos($modelName, '_') !== false) {
             //split the model name
             $parts = explode('_', $modelName);
+
             //ucfirst the 2 parts
-            return 'App\\Models\\' . ucfirst($parts[0]) . ucfirst($parts[1]);
+            return 'App\\Models\\'.ucfirst($parts[0]).ucfirst($parts[1]);
         }
-        return 'App\\Models\\' . $modelName;
+
+        return 'App\\Models\\'.$modelName;
     }
 
     /**
@@ -149,7 +147,7 @@ trait OsmfeaturesCommandHelper
                 throw WmOsmfeaturesException::invalidUrl($url);
             }
 
-            if ($response->successful() && !empty($response->json()['data'])) {
+            if ($response->successful() && ! empty($response->json()['data'])) {
                 $json = $response->json();
 
                 foreach ($json['data'] as $dataItem) {
@@ -160,7 +158,7 @@ trait OsmfeaturesCommandHelper
             } else {
                 break;
             }
-        } while (!empty($response->json()['data']));
+        } while (! empty($response->json()['data']));
 
         return $osmfeaturesIds->values();
     }

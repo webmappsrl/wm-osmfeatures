@@ -3,17 +3,15 @@
 namespace Wm\WmOsmfeatures\Commands;
 
 use Illuminate\Console\Command;
-use Wm\WmOsmfeatures\Models\YourModel;
-use Wm\WmOsmfeatures\Traits\OsmfeaturesCommandHelper;
 use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
-use Wm\WmOsmfeatures\Traits\OsmfeaturesImportableTrait;
+use Wm\WmOsmfeatures\Traits\OsmfeaturesCommandHelper;
 
 class WmosmfeaturesImportSyncCommand extends Command
 {
     use OsmfeaturesCommandHelper;
 
-
     protected $signature = 'wm-osmfeatures:import-sync';
+
     protected $description = 'Sync all elements from OSM Features to the local database';
 
     public function handle()
@@ -29,7 +27,7 @@ class WmosmfeaturesImportSyncCommand extends Command
         // Iterate over each model and trigger the import process
         foreach ($models as $modelName) {
             $className = $this->getClassName($modelName);
-            $this->info('Starting import for ' . $modelName);
+            $this->info('Starting import for '.$modelName);
             $className::importFromOsmFeatures();
         }
 

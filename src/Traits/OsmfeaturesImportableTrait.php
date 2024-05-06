@@ -2,16 +2,14 @@
 
 namespace Wm\WmOsmfeatures\Traits;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Database\Eloquent\Model;
-use Wm\WmOsmfeatures\Traits\OsmfeaturesTrait;
+use Illuminate\Support\Facades\Log;
 use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
 
 trait OsmfeaturesImportableTrait
 {
     use OsmfeaturesTrait;
+
     /**
      * Update local database records based on osmfeatures_id.
      *
@@ -25,7 +23,7 @@ trait OsmfeaturesImportableTrait
             try {
                 static::importSingleFeature($osmfeaturesId);
             } catch (WmOsmfeaturesException $exception) {
-                Log::error("Error importing osmfeature with ID $osmfeaturesId: " . $exception->getMessage());
+                Log::error("Error importing osmfeature with ID $osmfeaturesId: ".$exception->getMessage());
             }
         }
     }

@@ -2,8 +2,6 @@
 
 namespace Wm\WmOsmfeatures\Traits;
 
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
 
 trait OsmfeaturesTrait
@@ -14,12 +12,12 @@ trait OsmfeaturesTrait
     public static function getApiSingleFeature(string $osmfeatures_id): string
     {
         //check if the model instance has implemented the getOsmfeaturesEndpoint method
-        if (!method_exists(static::class, 'getOsmfeaturesEndpoint')) {
+        if (! method_exists(static::class, 'getOsmfeaturesEndpoint')) {
             throw WmOsmfeaturesException::missingEndpoint();
         }
 
         //check if osmfeatures_id is in the correct format
-        if (!preg_match('/^[NWR][1-9]\d*$/', $osmfeatures_id)) {
+        if (! preg_match('/^[NWR][1-9]\d*$/', $osmfeatures_id)) {
             throw WmOsmfeaturesException::invalidOsmfeaturesId($osmfeatures_id);
         }
 
@@ -30,6 +28,6 @@ trait OsmfeaturesTrait
             $endpoint .= '/';
         }
 
-        return $endpoint . $osmfeatures_id;
+        return $endpoint.$osmfeatures_id;
     }
 }
