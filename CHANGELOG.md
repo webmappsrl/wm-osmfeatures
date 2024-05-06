@@ -2,6 +2,12 @@
 
 All notable changes to `wm-osmfeatures` will be documented in this file.
 
+## 1.1.1 - 2024-05-06
+
+Fixed keywords
+
+**Full Changelog**: https://github.com/webmappsrl/wm-osmfeatures/compare/1.1.0...1.1.1
+
 ## 1.1.0 - 2024-05-06
 
 **Full Changelog**: https://github.com/webmappsrl/wm-osmfeatures/compare/1.0.0...1.1.0
