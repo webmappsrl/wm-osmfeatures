@@ -13,7 +13,7 @@ use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
 
 class OsmfeaturesSyncJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IsMonitored;
+    use Dispatchable, InteractsWithQueue, IsMonitored, Queueable, SerializesModels;
 
     protected $osmfeaturesId;
 
