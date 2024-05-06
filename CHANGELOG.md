@@ -2,6 +2,10 @@
 
 All notable changes to `wm-osmfeatures` will be documented in this file.
 
+## 1.1.0 - 2024-05-06
+
+**Full Changelog**: https://github.com/webmappsrl/wm-osmfeatures/compare/1.0.0...1.1.0
+
 ## 1.0.0 - 2024-05-03
 
 This is the initial release of the package.
