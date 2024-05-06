@@ -21,7 +21,7 @@ class WmOsmfeaturesException extends \Exception
 
     public static function missingInitializedModels(): self
     {
-        return new self('No initialized models found in App\Models directory of the project. Make sure you have implemented the OsmfeaturesSyncableTrait and OsmfeaturesSyncableInterface in the model.');
+        return new self('No initialized models found. Make sure you have implemented the traits and interface in the model.');
     }
 
     public static function missingTable(string $table): self
@@ -64,5 +64,20 @@ class WmOsmfeaturesException extends \Exception
     public static function modelNotFoud(string $osmfeaturesId)
     {
         return new self("Model with osmfeatures id {$osmfeaturesId} not found in database.");
+    }
+
+    public static function invalidFile(string $file): self
+    {
+        return new self("{$file} is not a valid file. Please check the file and try again.");
+    }
+
+    public static function invalidFileExtension(string $file): self
+    {
+        return new self("{$file} has an invalid extension. Please check the file and try again.");
+    }
+
+    public static function invalidFileContent(string $file): self
+    {
+        return new self("{$file} has an invalid content. Please check the file and try again.");
     }
 }
