@@ -3,8 +3,10 @@
 namespace Wm\WmOsmfeatures;
 
 use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Wm\WmOsmfeatures\Commands\WmOsmfeaturesCommand;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Wm\WmOsmfeatures\Commands\WmOsmfeaturesImportFirst;
+use Wm\WmOsmfeatures\Commands\WmOsmfeaturesImportSyncCommand;
 
 class WmOsmfeaturesServiceProvider extends PackageServiceProvider
 {
@@ -20,6 +22,8 @@ class WmOsmfeaturesServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasViews()
             ->hasMigration('create_wm-osmfeatures_table')
-            ->hasCommand(WmOsmfeaturesCommand::class);
+            ->hasCommand(WmOsmfeaturesCommand::class)
+            ->hasCommand(WmOsmfeaturesImportFirst::class)
+            ->hasCommand(WmOsmfeaturesImportSyncCommand::class);
     }
 }
