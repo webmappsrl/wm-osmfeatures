@@ -2,6 +2,15 @@
 
 All notable changes to `wm-osmfeatures` will be documented in this file.
 
+## Added new trait and manual import from txt file - 2024-05-07
+
+This Release add the `OsmfeaturesImportableTrait` along with 2 new commands:
+
+- `wm-osmfeatures:import-first {model} {filepath}`  for import specified model based on a osmfeatures id list from a .txt file
+- `wm-osmfeatures:import-sync` that uses local osmfeatures_ids to update the database.
+
+**Full Changelog**: https://github.com/webmappsrl/wm-osmfeatures/compare/1.1.1...1.2.0
+
 ## 1.1.1 - 2024-05-06
 
 Fixed keywords
