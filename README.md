@@ -1,8 +1,3 @@
-# Package documentation: wm-osmfeatures
-
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/webmapp/wm-osmfeatures.svg?style=flat-square)](https://packagist.org/packages/webmapp/wm-osmfeatures)
-[![Total Downloads](https://img.shields.io/packagist/dt/webmapp/wm-osmfeatures.svg?style=flat-square)](https://packagist.org/packages/webmapp/wm-osmfeatures)
-
 ## Package Documentation: WmOsmfeatures
 
 ### Introduction
@@ -92,18 +87,51 @@ protected $fillable = ['osmfeatures_id', 'osmfeatures_data', 'osmfeatures_update
 
 #### Synchronization
 
-To synchronize OSM features with your local database, use the provided Artisan command:
+To synchronize OSM features with your local database, you have two options:
 
-```
-php artisan wm-osmfeatures:sync
-```
+1. **Automatic Synchronization**: Use the provided Artisan command `wm-osmfeatures:sync` to automatically synchronize all initialized models. This command prepares the models and starts the sync process for each one, pushing sync jobs to the queue.
 
-This command will prepare the initialized models table to synchronize OSM features with your local database. It then
-starts the sync process for all initialized models and pushes sync jobs to the queue.
+    ```
+    php artisan wm-osmfeatures:sync
+    ```
+
+2. **Manual Import**: Alternatively, you can manually import records from OSM features to the local database using the `wm-osmfeatures:import-first` command. This command takes a model and a file path as arguments and dispatches sync jobs for the specified model based on the osmfeatures IDs provided in the file.
+
+    ```
+    php artisan wm-osmfeatures:import-first {model} {filepath}
+    ```
+
+    The file must be in `.txt` format and should contain a list of osmfeatures IDs, each formatted as follows: `XYYYYY`, where `X` can be `N`, `W`, or `R`, and `Y` is a number greater than 0.
+
+    Example:
+
+    ```
+    php artisan wm-osmfeatures:import-first Municipality osmfeatures.txt
+    ```
+
+    Additionally, you can use the `wm-osmfeatures:import-sync` command to manually trigger the sync process for all initialized models. This command iterates over each model and starts the import process.
+
+    ```
+    php artisan wm-osmfeatures:import-sync
+    ```
+
+    **Note:** The manual import commands are only available for models that implement the `OsmfeaturesImportableTrait`. Make sure to include the `OsmfeaturesImportableTrait` trait in your model as follows:
+
+    ```php
+    use Wm\WmOsmfeatures\Traits\OsmfeaturesImportableTrait;
+    use Wm/WmOsmfeatures\Interfaces\OsmfeaturesSyncableInterface;
+
+    class Municipality extends Model implements OsmfeaturesSyncableInterface
+    {
+        use OsmfeaturesImportableTrait;
+
+        //...
+    }
+    ```
 
 #### How the OsmfeaturesSyncJob works
 
-The `OsmfeaturesSyncJob` class is responsible for synchronizing OSM features with your local database. It makes a call to osmfeatures API and uses the `osmfeaturesUpdateLocalAfterSync(string $osmfeaturesId)` method defined in your model interface to update the local database with the new data. The `OsmfeaturesSyncJob` class runs in the background and synchronizes OSM features with your local database using the `OsmfeaturesSyncableInterface` methods.
+The `OsmfeaturesSyncJob` class is responsible for synchronizing OSM features with your local database. It makes a call to the OSM features API and uses the `osmfeaturesUpdateLocalAfterSync(string $osmfeaturesId)` method defined in your model interface to update the local database with the new data. The `OsmfeaturesSyncJob` class runs in the background and synchronizes OSM features with your local database using the methods defined in the `OsmfeaturesSyncableInterface`.
 
 ### Conclusion
 
@@ -114,19 +142,3 @@ For more information and detailed usage instructions, refer to the package docum
 ### Support and Feedback
 
 For support and feedback regarding the WmOsmfeatures package, please contact the package maintainers or open an issue on the GitHub repository. We appreciate any feedback and contributions to improve the package and its functionality.
-
----
-
-## Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-
-## Credits
-
--   [Webmapp Srl](https://github.com/webmappsrl)
--   [All Contributors](../../contributors)
-
-## License
-
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
