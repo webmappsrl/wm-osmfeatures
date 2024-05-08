@@ -2,6 +2,12 @@
 
 All notable changes to `wm-osmfeatures` will be documented in this file.
 
+## Added model option in wm osmfeatures command - 2024-05-08
+
+This release add the model option to wm osmfeatures command.
+
+**Full Changelog**: https://github.com/webmappsrl/wm-osmfeatures/compare/1.2.0...1.3.0
+
 ## Added new trait and manual import from txt file - 2024-05-07
 
 This Release add the `OsmfeaturesImportableTrait` along with 2 new commands:
