@@ -50,7 +50,7 @@ class Municipality extends Model implements OsmfeaturesSyncableInterface
 In your model, implement the following methods from the `OsmfeaturesSyncableInterface` interface:
 
 -   `getOsmfeaturesEndpoint`: Returns the OSMFeatures API endpoint.
--   `getOsmfeaturesListQueryParameters`: Returns the query parameters for listing features.
+-   `getOsmfeaturesListQueryParameters`: Returns the query parameters for listing features. Available universal parameters are: updated_at, bbox, score. More informations can be found in the [osmfeatures api documentation](https://osmfeatures.maphub.it/api/documentation)
 -   `osmfeaturesUpdateLocalAfterSync`: Updates the local database after a successful OSMFeatures sync.
 
 Example:
