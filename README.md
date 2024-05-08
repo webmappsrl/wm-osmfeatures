@@ -17,7 +17,7 @@ To install the WmOsmfeatures package, follow these steps:
 1. Install the package via Composer:
 
     ```
-    composer require wm/wmosmfeatures
+    composer require webmapp/wm-osmfeatures
     ```
 
 2. Configure your models to use the provided traits and interfaces.
