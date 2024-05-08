@@ -89,13 +89,19 @@ protected $fillable = ['osmfeatures_id', 'osmfeatures_data', 'osmfeatures_update
 
 To synchronize OSM features with your local database, you have two options:
 
-1. **Automatic Synchronization**: Use the provided Artisan command `wm-osmfeatures:sync` to automatically synchronize all initialized models. This command prepares the models and starts the sync process for each one, pushing sync jobs to the queue.
+1. **Automatic Synchronization**: Use the provided Artisan command `wm-osmfeatures:sync` to automatically synchronize all initialized models. This command prepares the models and starts the sync process for each one, pushing sync jobs to the queue. 
 
     ```
     php artisan wm-osmfeatures:sync
     ```
 
-2. **Manual Import**: Alternatively, you can manually import records from OSM features to the local database using the `wm-osmfeatures:import-first` command. This command takes a model and a file path as arguments and dispatches sync jobs for the specified model based on the osmfeatures IDs provided in the file.
+    Alternatively you can provide a ```--model=``` option to perform the sync only for the specified model
+   
+      ```
+    php artisan wm-osmfeatures:sync --model=Municipality
+    ```
+
+3. **Manual Import**: Alternatively, you can manually import records from OSM features to the local database using the `wm-osmfeatures:import-first` command. This command takes a model and a file path as arguments and dispatches sync jobs for the specified model based on the osmfeatures IDs provided in the file.
 
     ```
     php artisan wm-osmfeatures:import-first {model} {filepath}
