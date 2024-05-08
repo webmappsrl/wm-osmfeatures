@@ -49,7 +49,7 @@ class Municipality extends Model implements OsmfeaturesSyncableInterface
 
 In your model, implement the following methods from the `OsmfeaturesSyncableInterface` interface:
 
--   `getOsmfeaturesEndpoint`: Returns the OSMFeatures API endpoint for listing features.
+-   `getOsmfeaturesEndpoint`: Returns the OSMFeatures API endpoint.
 -   `getOsmfeaturesListQueryParameters`: Returns the query parameters for listing features.
 -   `osmfeaturesUpdateLocalAfterSync`: Updates the local database after a successful OSMFeatures sync.
 
@@ -101,7 +101,7 @@ To synchronize OSM features with your local database, you have two options:
     php artisan wm-osmfeatures:sync --model=Municipality
     ```
 
-3. **Manual Import**: Alternatively, you can manually import records from OSM features to the local database using the `wm-osmfeatures:import-first` command. This command takes a model and a file path as arguments and dispatches sync jobs for the specified model based on the osmfeatures IDs provided in the file.
+3. **Manual Import**: Manually import records from OSM features to the local database using the `wm-osmfeatures:import-first` command. This command takes a model and a file path as arguments and dispatches sync jobs for the specified model based on the osmfeatures IDs provided in the file.
 
     ```
     php artisan wm-osmfeatures:import-first {model} {filepath}
@@ -112,10 +112,10 @@ To synchronize OSM features with your local database, you have two options:
     Example:
 
     ```
-    php artisan wm-osmfeatures:import-first Municipality osmfeatures.txt
+    php artisan wm-osmfeatures:import-first Municipality storage/app/public/osmfeatures.txt
     ```
 
-    Additionally, you can use the `wm-osmfeatures:import-sync` command to manually trigger the sync process for all initialized models. This command iterates over each model and starts the import process.
+    Additionally, you can use the `wm-osmfeatures:import-sync` command to manually trigger the sync process for all initialized models. This command iterates over each model and starts the import process fetching     data from osmfeatures API using osmfeatures_id of each model.
 
     ```
     php artisan wm-osmfeatures:import-sync
