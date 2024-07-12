@@ -8,12 +8,11 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
-use romanzipp\QueueMonitor\Traits\IsMonitored;
 use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
 
 class OsmfeaturesSyncJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, IsMonitored, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $osmfeaturesId;
 
