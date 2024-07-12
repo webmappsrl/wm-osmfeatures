@@ -2,6 +2,4 @@
 
 namespace Wm\WmOsmfeatures;
 
-class WmOsmfeatures
-{
-}
+class WmOsmfeatures {}
