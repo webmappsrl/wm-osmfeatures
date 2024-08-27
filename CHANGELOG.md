@@ -2,6 +2,10 @@
 
 All notable changes to `wm-osmfeatures` will be documented in this file.
 
+## Changed data retrieved from json string to json array - 2024-08-27
+
+This release introduce a breaking change to the data provided by the package. Infact, the package now provides osmfeatures data as a json array and not string anymore
+
 ## Added model option in wm osmfeatures command - 2024-05-08
 
 This release add the model option to wm osmfeatures command.
