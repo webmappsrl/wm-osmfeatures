@@ -41,7 +41,7 @@ class OsmfeaturesSyncJob implements ShouldQueue
 
         $data = $response->json();
         $dataToRetrieve['osmfeatures_id'] = $data['properties']['osmfeatures_id'];
-        $dataToRetrieve['osmfeatures_data'] = json_encode($data);
+        $dataToRetrieve['osmfeatures_data'] = $data;
         $dataToRetrieve['osmfeatures_updated_at'] = $data['properties']['updated_at'];
 
         $this->className::updateOrCreate(['osmfeatures_id' => $data['properties']['osmfeatures_id']], $dataToRetrieve);
