@@ -23,7 +23,7 @@ trait OsmfeaturesImportableTrait
             try {
                 static::importSingleFeature($osmfeaturesId);
             } catch (WmOsmfeaturesException $exception) {
-                Log::error("Error importing osmfeature with ID $osmfeaturesId: " . $exception->getMessage());
+                Log::error("Error importing osmfeature with ID $osmfeaturesId: ".$exception->getMessage());
             }
         }
     }

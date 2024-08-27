@@ -27,7 +27,7 @@ class WmOsmfeaturesImportSyncCommand extends Command
         // Iterate over each model and trigger the import process
         foreach ($models as $modelName) {
             $className = $this->getClassName($modelName);
-            $this->info('Starting import for ' . $modelName);
+            $this->info('Starting import for '.$modelName);
             $className::importFromOsmFeatures();
         }
 
