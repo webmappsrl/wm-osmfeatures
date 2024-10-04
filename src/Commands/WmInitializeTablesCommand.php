@@ -5,10 +5,8 @@ namespace Wm\WmOsmfeatures\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Wm\WmOsmfeatures\Traits\OsmfeaturesCommandHelper;
 use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
+use Wm\WmOsmfeatures\Traits\OsmfeaturesCommandHelper;
 
 class WmInitializeTablesCommand extends Command
 {
@@ -29,7 +27,7 @@ class WmInitializeTablesCommand extends Command
             }
 
             foreach ($models as $modelName) {
-                $this->info('Initializing table for ' . $modelName);
+                $this->info('Initializing table for '.$modelName);
 
                 $className = $this->getClassName($modelName);
                 $table = $this->getTableName($className);

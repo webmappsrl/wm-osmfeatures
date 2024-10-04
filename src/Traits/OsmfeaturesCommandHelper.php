@@ -3,10 +3,8 @@
 namespace Wm\WmOsmfeatures\Traits;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
 
@@ -79,10 +77,10 @@ trait OsmfeaturesCommandHelper
             $parts = explode('_', $modelName);
 
             //ucfirst the 2 parts
-            return 'App\\Models\\' . ucfirst($parts[0]) . ucfirst($parts[1]);
+            return 'App\\Models\\'.ucfirst($parts[0]).ucfirst($parts[1]);
         }
 
-        return 'App\\Models\\' . $modelName;
+        return 'App\\Models\\'.$modelName;
     }
 
     /**
