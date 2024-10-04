@@ -61,7 +61,7 @@ class WmOsmfeaturesException extends \Exception
         return new self("The model {$className} is missing the following fillables: {$attributes}");
     }
 
-    public static function modelNotFoud(string $osmfeaturesId)
+    public static function modelNotFound(string $osmfeaturesId)
     {
         return new self("Model with osmfeatures id {$osmfeaturesId} not found in database.");
     }

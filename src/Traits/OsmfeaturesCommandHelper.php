@@ -45,40 +45,6 @@ trait OsmfeaturesCommandHelper
     }
 
     /**
-     * Initialize the given database table for osmfeatures sync. Adding osmfeatures_id, osmfeatures_data, osmfeatures_updated_at columns
-     */
-    protected function initializeTable(string $table): void
-    {
-        //get the table schema
-        $schema = DB::getSchemaBuilder();
-
-        //check if the table exists
-        if (! $schema->hasTable($table)) {
-            throw WmOsmfeaturesException::missingTable($table);
-        }
-
-        if ($schema->hasColumns($table, ['osmfeatures_id', 'osmfeatures_data', 'osmfeatures_updated_at'])) {
-            Log::info("Table $table already initialized");
-            $this->info("Table $table already initialized, skipping");
-
-            return;
-        }
-
-        if (! in_array('osmfeatures_id', $schema->getColumnListing($table))) {
-            DB::statement("ALTER TABLE $table ADD COLUMN osmfeatures_id varchar(255)");
-        }
-
-        if (! in_array('osmfeatures_data', $schema->getColumnListing($table))) {
-            DB::statement("ALTER TABLE $table ADD COLUMN osmfeatures_data jsonb");
-        }
-
-        if (! in_array('osmfeatures_updated_at', $schema->getColumnListing($table))) {
-            DB::statement("ALTER TABLE $table ADD COLUMN osmfeatures_updated_at timestamp");
-        }
-        $this->info("Table $table initialized for the osmfeatures sync");
-    }
-
-    /**
      * Check if the given model has all the required fillables
      *
      *
@@ -113,10 +79,10 @@ trait OsmfeaturesCommandHelper
             $parts = explode('_', $modelName);
 
             //ucfirst the 2 parts
-            return 'App\\Models\\'.ucfirst($parts[0]).ucfirst($parts[1]);
+            return 'App\\Models\\' . ucfirst($parts[0]) . ucfirst($parts[1]);
         }
 
-        return 'App\\Models\\'.$modelName;
+        return 'App\\Models\\' . $modelName;
     }
 
     /**
