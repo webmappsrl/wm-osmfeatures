@@ -16,7 +16,7 @@ class OsmfeaturesSyncJob implements ShouldQueue
 
     protected $osmfeaturesId;
 
-    protected $className;
+    protected $className; //commento
 
     public function __construct($osmfeaturesId, $className)
     {
