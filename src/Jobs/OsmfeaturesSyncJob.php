@@ -9,10 +9,16 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
+use Wm\WmPackage\Jobs\Abstracts\BaseJob;
 
-class OsmfeaturesSyncJob implements ShouldQueue
+class OsmfeaturesSyncJob extends BaseJob
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    protected function getRedisLockKey(): string
+    {
+        return $this->osmfeaturesId . ':' . $this->className;
+    }
 
     protected $osmfeaturesId;
 
