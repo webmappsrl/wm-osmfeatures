@@ -3,7 +3,6 @@
 namespace Wm\WmOsmfeatures\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -17,7 +16,7 @@ class OsmfeaturesSyncJob extends BaseJob
 
     protected function getRedisLockKey(): string
     {
-        return $this->osmfeaturesId . ':' . $this->className;
+        return $this->osmfeaturesId.':'.$this->className;
     }
 
     protected $osmfeaturesId;
