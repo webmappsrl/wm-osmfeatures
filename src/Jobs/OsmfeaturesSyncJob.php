@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
-use Wm\WmPackage\Jobs\Abstracts\BaseJob;
+use Wm\WmPackage\Jobs\Abstract\BaseJob;
 
 class OsmfeaturesSyncJob extends BaseJob
 {
@@ -17,6 +17,11 @@ class OsmfeaturesSyncJob extends BaseJob
     protected function getRedisLockKey(): string
     {
         return $this->osmfeaturesId.':'.$this->className;
+    }
+
+    protected function getLogChannel(): string
+    {
+        return 'wm-osmfeatures';
     }
 
     protected $osmfeaturesId;
