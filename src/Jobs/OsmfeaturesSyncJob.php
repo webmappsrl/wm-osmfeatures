@@ -16,7 +16,7 @@ class OsmfeaturesSyncJob extends BaseJob
 
     protected function getRedisLockKey(): string
     {
-        return $this->osmfeaturesId.':'.$this->className;
+        return $this->osmfeaturesId . ':' . $this->className;
     }
 
     protected function getLogChannel(): string
@@ -26,7 +26,7 @@ class OsmfeaturesSyncJob extends BaseJob
 
     protected $osmfeaturesId;
 
-    protected $className; //commento
+    protected $className;
 
     public function __construct($osmfeaturesId, $className)
     {
@@ -50,11 +50,11 @@ class OsmfeaturesSyncJob extends BaseJob
         }
 
         $data = $response->json();
-        $dataToRetrieve['osmfeatures_id'] = $data['properties']['osmfeatures_id'];
+        $dataToRetrieve['osmfeatures_id'] = $this->osmfeaturesId;
         $dataToRetrieve['osmfeatures_data'] = $data;
         $dataToRetrieve['osmfeatures_updated_at'] = $data['properties']['updated_at'];
 
-        $this->className::updateOrCreate(['osmfeatures_id' => $data['properties']['osmfeatures_id']], $dataToRetrieve);
+        $this->className::updateOrCreate(['osmfeatures_id' => $this->osmfeaturesId], $dataToRetrieve);
         $this->className::osmfeaturesUpdateLocalAfterSync($this->osmfeaturesId);
     }
 }
