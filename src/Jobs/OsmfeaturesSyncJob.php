@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
-use Wm\WmPackage\Jobs\Abstract\BaseJob;
+use Wm\WmOsmfeatures\Jobs\Abstract\BaseJob;
 
 class OsmfeaturesSyncJob extends BaseJob
 {
