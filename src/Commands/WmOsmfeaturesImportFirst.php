@@ -3,6 +3,7 @@
 namespace Wm\WmOsmfeatures\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
 use Wm\WmOsmfeatures\Jobs\OsmfeaturesSyncJob;
 use Wm\WmOsmfeatures\Traits\OsmfeaturesCommandHelper;
@@ -31,26 +32,26 @@ class WmOsmfeaturesImportFirst extends Command
         }
 
         $this->checkFillables($className);
-        $this->info('Initializing table for '.$className);
+        $this->info('Initializing table for ' . $className);
 
         $table = $this->getTableName($className);
-        $this->initializeTable($table);
+        Artisan::call('wm-osmfeatures:initialize-tables', ['--table' => $table]);
 
         $this->info('Table initialized');
 
-        $this->info($className.' is ready for the import');
+        $this->info($className . ' is ready for the import');
 
         //validate the file
-        $this->info('Validating file '.$this->argument('filepath'));
+        $this->info('Validating file ' . $this->argument('filepath'));
         $this->validateFile($this->argument('filepath'));
 
         //get the osmfeatures ids from the file
-        $this->info('Getting osmfeatures ids from '.$this->argument('filepath'));
+        $this->info('Getting osmfeatures ids from ' . $this->argument('filepath'));
         $osmfeaturesIds = $this->getOsmfeatureIdsFromFile($this->argument('filepath'));
-        $this->info('Found '.count($osmfeaturesIds).' ids in '.$this->argument('filepath'));
+        $this->info('Found ' . count($osmfeaturesIds) . ' ids in ' . $this->argument('filepath'));
 
         //dispatch sync jobs for every osmfeatures_id
-        $this->info('Dispatching jobs for '.$className);
+        $this->info('Dispatching jobs for ' . $className);
         foreach ($osmfeaturesIds as $osmfeaturesId) {
             dispatch(new OsmfeaturesSyncJob($osmfeaturesId, $className));
         }
