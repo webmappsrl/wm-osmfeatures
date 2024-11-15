@@ -20,10 +20,13 @@ trait OsmfeaturesImportableTrait
         $osmfeaturesIds = static::pluck('osmfeatures_id')->toArray();
 
         foreach ($osmfeaturesIds as $osmfeaturesId) {
+            if ($osmfeaturesId === null) {
+                continue;
+            }
             try {
                 static::importSingleFeature($osmfeaturesId);
             } catch (WmOsmfeaturesException $exception) {
-                Log::error("Error importing osmfeature with ID $osmfeaturesId: ".$exception->getMessage());
+                Log::error("Error importing osmfeature with ID $osmfeaturesId: " . $exception->getMessage());
             }
         }
     }
