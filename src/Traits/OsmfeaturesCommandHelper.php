@@ -17,7 +17,7 @@ trait OsmfeaturesCommandHelper
     {
         $modelDirectory = app_path('/Models');
 
-        //get all the files in the model directory
+        // get all the files in the model directory
         $modelFiles = File::files($modelDirectory);
 
         if (empty($modelFiles)) {
@@ -27,12 +27,12 @@ trait OsmfeaturesCommandHelper
         $models = [];
 
         foreach ($modelFiles as $file) {
-            //get the file content
+            // get the file content
             $content = File::get($file);
 
-            //check if the content contains the trait
+            // check if the content contains the trait
             if (Str::contains($content, $trait)) {
-                //get the model name
+                // get the model name
                 $model = Str::before($file->getFilename(), '.php');
 
                 $models[] = $model;
@@ -73,10 +73,10 @@ trait OsmfeaturesCommandHelper
     protected function getClassName(string $modelName)
     {
         if (strpos($modelName, '_') !== false) {
-            //split the model name
+            // split the model name
             $parts = explode('_', $modelName);
 
-            //ucfirst the 2 parts
+            // ucfirst the 2 parts
             return 'App\\Models\\'.ucfirst($parts[0]).ucfirst($parts[1]);
         }
 

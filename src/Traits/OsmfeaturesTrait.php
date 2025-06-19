@@ -11,19 +11,19 @@ trait OsmfeaturesTrait
      */
     public static function getApiSingleFeature(string $osmfeatures_id): string
     {
-        //check if the model instance has implemented the getOsmfeaturesEndpoint method
+        // check if the model instance has implemented the getOsmfeaturesEndpoint method
         if (! method_exists(static::class, 'getOsmfeaturesEndpoint')) {
             throw WmOsmfeaturesException::missingEndpoint();
         }
 
-        //check if osmfeatures_id is in the correct format
+        // check if osmfeatures_id is in the correct format
         if (! preg_match('/^[NWR][1-9]\d*$/', $osmfeatures_id)) {
             throw WmOsmfeaturesException::invalidOsmfeaturesId($osmfeatures_id);
         }
 
         $endpoint = static::getOsmfeaturesEndpoint();
 
-        //if endpoint does not finish with '/', add it
+        // if endpoint does not finish with '/', add it
         if (substr($endpoint, -1) != '/') {
             $endpoint .= '/';
         }

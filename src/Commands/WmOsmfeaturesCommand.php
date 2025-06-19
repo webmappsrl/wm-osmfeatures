@@ -35,7 +35,7 @@ class WmOsmfeaturesCommand extends Command
             $this->info('Fetched '.count($osmfeaturesIds).' ids');
             $this->info('Dispatching jobs for '.$model);
 
-            //dispatch a job for each osmfeatures id
+            // dispatch a job for each osmfeatures id
             $osmfeaturesIds->each(function ($osmfeaturesId) use ($className) {
                 dispatch(new OsmfeaturesSyncJob($osmfeaturesId, $className));
             });
@@ -49,7 +49,7 @@ class WmOsmfeaturesCommand extends Command
                 throw WmOsmfeaturesException::missingInitializedModels();
             }
 
-            //for each model initialized with the trait, initialize the table and get all the instances
+            // for each model initialized with the trait, initialize the table and get all the instances
             foreach ($models as $modelName) {
                 $this->info('Initializing table for '.$modelName);
 
@@ -69,7 +69,7 @@ class WmOsmfeaturesCommand extends Command
                 $this->info('Fetched '.count($osmfeaturesIds).' ids');
                 $this->info('Dispatching jobs for '.$modelName);
 
-                //dispatch a job for each osmfeatures id
+                // dispatch a job for each osmfeatures id
                 $osmfeaturesIds->each(function ($osmfeaturesId) use ($className) {
                     dispatch(new OsmfeaturesSyncJob($osmfeaturesId, $className));
                 });

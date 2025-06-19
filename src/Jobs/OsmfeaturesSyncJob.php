@@ -16,7 +16,7 @@ class OsmfeaturesSyncJob extends BaseJob
 
     protected function getRedisLockKey(): string
     {
-        return $this->osmfeaturesId . ':' . $this->className;
+        return $this->osmfeaturesId.':'.$this->className;
     }
 
     protected function getLogChannel(): string
@@ -61,14 +61,12 @@ class OsmfeaturesSyncJob extends BaseJob
         $this->className::osmfeaturesUpdateLocalAfterSync($this->osmfeaturesId);
     }
 
-
-
     private function extractProperties($data)
     {
         $existingProps = $this->className::where('osmfeatures_id', $this->osmfeaturesId)->value('properties') ?? [];
         $extractedProps = $this->className::extractPropertiesFromOsmfeatures($data);
-        //if existingprops is not an array, or it is empty, return extractedprops
-        if (!is_array($existingProps) || empty($existingProps)) {
+        // if existingprops is not an array, or it is empty, return extractedprops
+        if (! is_array($existingProps) || empty($existingProps)) {
             return $extractedProps;
         }
 
@@ -77,6 +75,7 @@ class OsmfeaturesSyncJob extends BaseJob
                 $existingProps[$key] = $value;
             }
         }
+
         return $existingProps;
     }
 }
