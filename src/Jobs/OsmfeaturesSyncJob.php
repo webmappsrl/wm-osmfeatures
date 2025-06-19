@@ -16,7 +16,7 @@ class OsmfeaturesSyncJob extends BaseJob
 
     protected function getRedisLockKey(): string
     {
-        return $this->osmfeaturesId.':'.$this->className;
+        return $this->osmfeaturesId . ':' . $this->className;
     }
 
     protected function getLogChannel(): string
@@ -53,8 +53,30 @@ class OsmfeaturesSyncJob extends BaseJob
         $dataToRetrieve['osmfeatures_id'] = $this->osmfeaturesId;
         $dataToRetrieve['osmfeatures_data'] = $data;
         $dataToRetrieve['osmfeatures_updated_at'] = $data['properties']['updated_at'];
+        if (method_exists($this->className, 'extractPropertiesFromOsmfeatures')) {
+            $dataToRetrieve['properties'] = $this->extractProperties($data);
+        }
 
         $this->className::updateOrCreate(['osmfeatures_id' => $this->osmfeaturesId], $dataToRetrieve);
         $this->className::osmfeaturesUpdateLocalAfterSync($this->osmfeaturesId);
+    }
+
+
+
+    private function extractProperties($data)
+    {
+        $existingProps = $this->className::where('osmfeatures_id', $this->osmfeaturesId)->value('properties') ?? [];
+        $extractedProps = $this->className::extractPropertiesFromOsmfeatures($data);
+        //if existingprops is not an array, or it is empty, return extractedprops
+        if (!is_array($existingProps) || empty($existingProps)) {
+            return $extractedProps;
+        }
+
+        foreach ($extractedProps as $key => $value) {
+            if (array_key_exists($key, $existingProps)) {
+                $existingProps[$key] = $value;
+            }
+        }
+        return $existingProps;
     }
 }
