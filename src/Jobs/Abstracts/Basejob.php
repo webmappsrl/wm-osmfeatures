@@ -28,12 +28,13 @@ abstract class BaseJob implements ShouldQueue
     /**
      * Specify the job middleware.
      *-
+     *
      * @return array
      */
     public function middleware()
     {
         $lockKey = $this->getLockKey();
-        $this->logInfo('lockKey: ' . $lockKey);
+        $this->logInfo('lockKey: '.$lockKey);
 
         return [(new WithoutOverlapping($lockKey, 60))->dontRelease()];
     }
@@ -46,7 +47,7 @@ abstract class BaseJob implements ShouldQueue
     protected function getLockKey()
     {
         $serializable = $this->getSerializableProperties();
-        $lockKey = 'job_lock:' . static::class . ':' . md5(serialize($serializable) . ':' . $this->getRedisLockKey());
+        $lockKey = 'job_lock:'.static::class.':'.md5(serialize($serializable).':'.$this->getRedisLockKey());
 
         return $lockKey;
     }
@@ -138,6 +139,6 @@ abstract class BaseJob implements ShouldQueue
      */
     public function failed(\Throwable $exception)
     {
-        $this->logError('Job fallito: ' . $exception->getMessage());
+        $this->logError('Job fallito: '.$exception->getMessage());
     }
 }
