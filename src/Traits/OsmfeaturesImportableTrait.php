@@ -26,7 +26,7 @@ trait OsmfeaturesImportableTrait
             try {
                 static::importSingleFeature($osmfeaturesId);
             } catch (WmOsmfeaturesException $exception) {
-                Log::error("Error importing osmfeature with ID $osmfeaturesId: " . $exception->getMessage());
+                Log::error("Error importing osmfeature with ID $osmfeaturesId: ".$exception->getMessage());
             }
         }
     }
@@ -43,6 +43,7 @@ trait OsmfeaturesImportableTrait
         if ($existingRecord && isset($existingRecord->osm2cai_status) && $existingRecord->osm2cai_status > 3) {
             $id = $existingRecord->id;
             Log::channel('wm-osmfeatures')->info("id {$id} - Record {$osmfeaturesId} is validated (status 4) - skipping import to preserve validated data");
+
             return;
         }
 

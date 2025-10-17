@@ -76,11 +76,11 @@ trait OsmfeaturesCommandHelper
             // split the model name
             $parts = explode('_', $modelName);
 
-            //ucfirst the 2 parts
-            return 'App\\Models\\' . ucfirst($parts[0]) . ucfirst($parts[1]);
+            // ucfirst the 2 parts
+            return 'App\\Models\\'.ucfirst($parts[0]).ucfirst($parts[1]);
         }
 
-        return 'App\\Models\\' . $modelName;
+        return 'App\\Models\\'.$modelName;
     }
 
     /**

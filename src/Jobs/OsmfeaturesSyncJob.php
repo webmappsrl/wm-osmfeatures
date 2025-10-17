@@ -45,6 +45,7 @@ class OsmfeaturesSyncJob extends BaseJob
         if ($existingRecord && isset($existingRecord->osm2cai_status) && $existingRecord->osm2cai_status == 4) {
             $id = $existingRecord->id;
             Log::channel('wm-osmfeatures')->info("id {$id} - Record {$this->osmfeaturesId} is validated (status 4) - skipping sync to preserve validated data");
+
             return;
         }
 
@@ -77,8 +78,8 @@ class OsmfeaturesSyncJob extends BaseJob
         $modelId = $existingRecord ? $existingRecord->id : null;
 
         $extractedProps = $this->className::extractPropertiesFromOsmfeatures($data, $modelId);
-        //if existingprops is not an array, or it is empty, return extractedprops
-        if (!is_array($existingProps) || empty($existingProps)) {
+        // if existingprops is not an array, or it is empty, return extractedprops
+        if (! is_array($existingProps) || empty($existingProps)) {
             return $extractedProps;
         }
 
