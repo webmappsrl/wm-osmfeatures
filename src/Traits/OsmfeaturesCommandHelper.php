@@ -76,11 +76,21 @@ trait OsmfeaturesCommandHelper
             // split the model name
             $parts = explode('_', $modelName);
 
-            // ucfirst the 2 parts
-            return 'App\\Models\\'.ucfirst($parts[0]).ucfirst($parts[1]);
+            // Filter out empty parts and check if we have at least 2 non-empty parts
+            $nonEmptyParts = array_filter($parts, function ($part) {
+                return !empty(trim($part));
+            });
+
+            if (count($nonEmptyParts) < 2) {
+                throw new \InvalidArgumentException("Model name '{$modelName}' with underscore must have at least 2 non-empty parts");
+            }
+
+            // ucfirst the first 2 non-empty parts
+            $nonEmptyParts = array_values($nonEmptyParts); // Re-index array
+            return 'App\\Models\\' . ucfirst($nonEmptyParts[0]) . ucfirst($nonEmptyParts[1]);
         }
 
-        return 'App\\Models\\'.$modelName;
+        return 'App\\Models\\' . ucfirst($modelName);
     }
 
     /**
