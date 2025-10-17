@@ -17,7 +17,7 @@ class OsmfeaturesSyncJob extends BaseJob
 
     protected function getRedisLockKey(): string
     {
-        return $this->osmfeaturesId.':'.$this->className;
+        return $this->osmfeaturesId . ':' . $this->className;
     }
 
     protected function getLogChannel(): string
@@ -42,9 +42,9 @@ class OsmfeaturesSyncJob extends BaseJob
     {
         // Check if the model has osm2cai_status field and if it's validated (status 4) - if so, skip sync
         $existingRecord = $this->className::where('osmfeatures_id', $this->osmfeaturesId)->first();
-        if ($existingRecord && isset($existingRecord->osm2cai_status) && $existingRecord->osm2cai_status == 4) {
+        if ($existingRecord && isset($existingRecord->osm2cai_status) && $existingRecord->osm2cai_status > 3) {
             $id = $existingRecord->id;
-            Log::channel('wm-osmfeatures')->info("id {$id} - Record {$this->osmfeaturesId} is validated (status 4) - skipping sync to preserve validated data");
+            Log::channel('wm-osmfeatures')->info("id {$id} - Record {$this->osmfeaturesId} is validated (status {$existingRecord->osm2cai_status}) - skipping sync to preserve validated data");
 
             return;
         }
