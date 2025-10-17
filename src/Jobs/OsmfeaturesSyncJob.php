@@ -17,7 +17,7 @@ class OsmfeaturesSyncJob extends BaseJob
 
     protected function getRedisLockKey(): string
     {
-        return $this->osmfeaturesId . ':' . $this->className;
+        return $this->osmfeaturesId.':'.$this->className;
     }
 
     protected function getLogChannel(): string
