@@ -7,6 +7,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
 use Wm\WmOsmfeatures\Jobs\Abstracts\BaseJob;
 
@@ -39,6 +40,14 @@ class OsmfeaturesSyncJob extends BaseJob
      */
     public function handle(): void
     {
+        // Check if the model has osm2cai_status field and if it's validated (status 4) - if so, skip sync
+        $existingRecord = $this->className::where('osmfeatures_id', $this->osmfeaturesId)->first();
+        if ($existingRecord && isset($existingRecord->osm2cai_status) && $existingRecord->osm2cai_status == 4) {
+            $id = $existingRecord->id;
+            Log::channel('wm-osmfeatures')->info("id {$id} - Record {$this->osmfeaturesId} is validated (status 4) - skipping sync to preserve validated data");
+            return;
+        }
+
         $singleFeatureApi = $this->className::getApiSingleFeature($this->osmfeaturesId);
 
         $dataToRetrieve = [];
@@ -63,10 +72,13 @@ class OsmfeaturesSyncJob extends BaseJob
 
     private function extractProperties($data)
     {
-        $existingProps = $this->className::where('osmfeatures_id', $this->osmfeaturesId)->value('properties') ?? [];
-        $extractedProps = $this->className::extractPropertiesFromOsmfeatures($data);
-        // if existingprops is not an array, or it is empty, return extractedprops
-        if (! is_array($existingProps) || empty($existingProps)) {
+        $existingRecord = $this->className::where('osmfeatures_id', $this->osmfeaturesId)->first();
+        $existingProps = $existingRecord ? $existingRecord->properties : [];
+        $modelId = $existingRecord ? $existingRecord->id : null;
+
+        $extractedProps = $this->className::extractPropertiesFromOsmfeatures($data, $modelId);
+        //if existingprops is not an array, or it is empty, return extractedprops
+        if (!is_array($existingProps) || empty($existingProps)) {
             return $extractedProps;
         }
 
