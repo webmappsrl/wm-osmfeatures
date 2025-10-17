@@ -27,7 +27,7 @@ abstract class BaseJob implements ShouldQueue
 
     /**
      * Specify the job middleware.
-     *
+     *-
      * @return array
      */
     public function middleware()
