@@ -78,7 +78,7 @@ trait OsmfeaturesCommandHelper
 
             // Filter out empty parts and check if we have at least 2 non-empty parts
             $nonEmptyParts = array_filter($parts, function ($part) {
-                return ! empty(trim($part));
+                return !empty(trim($part));
             });
 
             if (count($nonEmptyParts) < 2) {
@@ -87,11 +87,10 @@ trait OsmfeaturesCommandHelper
 
             // ucfirst the first 2 non-empty parts
             $nonEmptyParts = array_values($nonEmptyParts); // Re-index array
-
-            return 'App\\Models\\'.ucfirst($nonEmptyParts[0]).ucfirst($nonEmptyParts[1]);
+            return 'App\\Models\\' . ucfirst($nonEmptyParts[0]) . ucfirst($nonEmptyParts[1]);
         }
 
-        return 'App\\Models\\'.ucfirst($modelName);
+        return 'App\\Models\\' . ucfirst($modelName);
     }
 
     /**
