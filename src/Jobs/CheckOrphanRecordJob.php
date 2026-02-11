@@ -4,9 +4,9 @@ namespace Wm\WmOsmfeatures\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Wm\WmOsmfeatures\Jobs\Abstracts\BaseJob;
@@ -17,7 +17,7 @@ class CheckOrphanRecordJob extends BaseJob
 
     protected function getRedisLockKey(): string
     {
-        return 'orphan:' . $this->recordId . ':' . $this->className;
+        return 'orphan:'.$this->recordId.':'.$this->className;
     }
 
     protected function getLogChannel(): string
@@ -26,7 +26,9 @@ class CheckOrphanRecordJob extends BaseJob
     }
 
     protected $recordId;
+
     protected $osmfeaturesId;
+
     protected $className;
 
     public function __construct($recordId, $osmfeaturesId, $className)
@@ -43,19 +45,22 @@ class CheckOrphanRecordJob extends BaseJob
     {
         $record = $this->className::find($this->recordId);
 
-        if (!$record) {
+        if (! $record) {
             Log::channel('wm-osmfeatures')->warning("Orphan check: Record {$this->recordId} not found");
+
             return;
         }
 
-        if (!$record->osmfeatures_id) {
+        if (! $record->osmfeatures_id) {
             Log::channel('wm-osmfeatures')->warning("Orphan check: Record {$this->recordId} has no osmfeatures_id");
+
             return;
         }
 
         // Se è già marcato come non esistente e non vogliamo ricontrollarlo, skip
         if (isset($record->osmfeatures_exists) && $record->osmfeatures_exists === false) {
             Log::channel('wm-osmfeatures')->debug("Orphan check: Record {$this->recordId} already marked as non-existent, skipping");
+
             return;
         }
 
