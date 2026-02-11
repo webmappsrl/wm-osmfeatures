@@ -116,7 +116,10 @@ trait OsmfeaturesCommandHelper
 
         do {
             $url = $className::getApiList($page);
-            $response = Http::get($url);
+            // Aggiungo timeout e retry per gestire timeout transitori
+            $response = Http::timeout(30)
+                ->retry(3, 2000) // 3 tentativi, 2s di attesa tra uno e l'altro
+                ->get($url);
 
             if ($response->failed()) {
                 throw WmOsmfeaturesException::invalidUrl($url);
