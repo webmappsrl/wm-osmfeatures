@@ -2,6 +2,7 @@
 
 namespace Wm\WmOsmfeatures\Jobs;
 
+use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -13,7 +14,7 @@ use Wm\WmOsmfeatures\Jobs\Abstracts\BaseJob;
 
 class OsmfeaturesSyncJob extends BaseJob
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected function getRedisLockKey(): string
     {

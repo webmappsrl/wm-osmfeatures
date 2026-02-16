@@ -2,8 +2,11 @@
 
 namespace Wm\WmOsmfeatures\Commands;
 
+use App\Jobs\GeneratePbfAfterOsmfeaturesSyncJob;
+use Illuminate\Bus\Batch;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Log;
 use Wm\WmOsmfeatures\Exceptions\WmOsmfeaturesException;
 use Wm\WmOsmfeatures\Jobs\CheckOrphanRecordJob;
@@ -43,12 +46,28 @@ class WmOsmfeaturesCommand extends Command
 
             $this->info('Dispatching sync jobs for '.$model);
 
-            // dispatch a job for each osmfeatures id
-            $osmfeaturesIds->each(function ($osmfeaturesId) use ($className) {
-                dispatch(new OsmfeaturesSyncJob($osmfeaturesId, $className));
+            // Raccogli tutti i job di sincronizzazione in un array per creare un batch
+            $syncJobs = [];
+            $osmfeaturesIds->each(function ($osmfeaturesId) use ($className, &$syncJobs) {
+                $syncJobs[] = new OsmfeaturesSyncJob($osmfeaturesId, $className);
             });
-            $this->info("Jobs pushed for $model");
-            Log::info("Jobs pushed for $model");
+
+            // Crea un batch e dispatcha il job finale quando tutti i job sono completati
+            $batch = Bus::batch($syncJobs)
+                ->name("Osmfeatures sync: {$model}")
+                ->then(function (Batch $batch) {
+                    // Dispatcha il job di generazione PBF (gestisce internamente se ci sono hiking routes modificate)
+                    GeneratePbfAfterOsmfeaturesSyncJob::dispatch('HikingRoute');
+                })
+                ->finally(function (Batch $batch) use ($model) {
+                    if ($batch->failedJobs > 0) {
+                        Log::warning("Osmfeatures sync completed with {$batch->failedJobs} failed jobs for {$model}");
+                    }
+                })
+                ->dispatch();
+
+            $this->info("Jobs pushed for $model (batch ID: {$batch->id})");
+            Log::info("Jobs pushed for $model (batch ID: {$batch->id})");
         } else {
             $this->info('Checking initialized models...');
             $models = $this->getInitializedModels('Wm\WmOsmfeatures\Traits\OsmfeaturesSyncableTrait');
