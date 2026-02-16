@@ -26,7 +26,7 @@ trait OsmfeaturesImportableTrait
             try {
                 static::importSingleFeature($osmfeaturesId);
             } catch (WmOsmfeaturesException $exception) {
-                Log::error("Error importing osmfeature with ID $osmfeaturesId: ".$exception->getMessage());
+                Log::error("Error importing osmfeature with ID $osmfeaturesId: " . $exception->getMessage());
             }
         }
     }
@@ -61,12 +61,7 @@ trait OsmfeaturesImportableTrait
             'osmfeatures_updated_at' => $data['properties']['updated_at'],
         ];
 
-        $model = static::where('osmfeatures_id', $osmfeaturesId)->first();
-        if ($model) {
-            $model->update($dataToRetrieve);
-            static::osmfeaturesUpdateLocalAfterSync($osmfeaturesId);
-        } else {
-            static::create($dataToRetrieve);
-        }
+        static::updateOrCreate(['osmfeatures_id' => $osmfeaturesId], $dataToRetrieve);
+        static::osmfeaturesUpdateLocalAfterSync($osmfeaturesId);
     }
 }
